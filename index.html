@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HYPER UNIVERSITY | Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0c1322;
+            --surface: #141b2b;
+            --surface2: #191f2f;
+            --surface3: #232a3a;
+            --primary: #d0bcff;
+            --primary2: #a078ff;
+            --secondary: #dfb7ff;
+            --text: #dce2f7;
+            --muted: #9b93a8;
+            --outline: #494454;
+            --error: #ffb4ab;
+            --success: #6fcf97;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .bg-blobs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: .15;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .blob1 {
+            width: 400px;
+            height: 400px;
+            background: var(--primary2);
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .blob2 {
+            width: 350px;
+            height: 350px;
+            background: #691ea6;
+            bottom: -80px;
+            right: -80px;
+            animation-delay: -4s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(20px, -30px) scale(1.05);
+            }
+        }
+
+        .login-wrap {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+            padding: 2rem;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: .25em;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+
+        .logo-sub {
+            font-size: .65rem;
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-top: .25rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid rgba(208, 188, 255, .08);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, .5);
+        }
+
+        .card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: .35rem;
+        }
+
+        .card-sub {
+            color: var(--muted);
+            font-size: .8rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .field {
+            margin-bottom: 1.1rem;
+        }
+
+        .field label {
+            display: block;
+            font-size: .72rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: .45rem;
+        }
+
+        .field input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--outline);
+            border-radius: 10px;
+            padding: .75rem 1rem;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: .9rem;
+            transition: border .2s, box-shadow .2s;
+            outline: none;
+        }
+
+        .field input:focus {
+            border-color: var(--primary2);
+            box-shadow: 0 0 0 3px rgba(160, 120, 255, .15);
+        }
+
+        .btn {
+            width: 100%;
+            padding: .85rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: .85rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            color: #23005c;
+            transition: transform .2s, box-shadow .2s;
+            margin-top: .5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(160, 120, 255, .35);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .err {
+            background: rgba(255, 180, 171, .1);
+            border: 1px solid rgba(255, 180, 171, .3);
+            border-radius: 8px;
+            padding: .65rem .9rem;
+            font-size: .8rem;
+            color: var(--error);
+            margin-top: .85rem;
+            display: none;
+        }
+
+        .err.show {
+            display: block;
+        }
+
+        .admin-link {
+            text-align: center;
+            margin-top: 1.25rem;
+        }
+
+        .admin-link a {
+            color: var(--muted);
+            font-size: .75rem;
+            text-decoration: none;
+            transition: color .2s;
+        }
+
+        .admin-link a:hover {
+            color: var(--primary);
+        }
+
+        .noise {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: .04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+
+<body>
+    <div class="noise"></div>
+    <div class="bg-blobs">
+        <div class="blob blob1"></div>
+        <div class="blob blob2"></div>
+    </div>
+
+    <div class="login-wrap">
+        <div class="logo">
+            <div class="logo-text">Hyper University</div>
+            <div class="logo-sub">Member Portal</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Welcome back.</div>
+            <div class="card-sub">Login to track your execution and climb the leaderboard.</div>
+
+            <div class="field">
+                <label>Your Name</label>
+                <input type="text" id="nameInput" placeholder="Enter your name" autocomplete="off" />
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" id="passInput" placeholder="••••••••" />
+            </div>
+            <button class="btn" id="loginBtn" onclick="doLogin()">Enter the Arena</button>
+            <div class="err" id="errMsg">Incorrect name or password. Try again.</div>
+        </div>
+        <div class="admin-link"><a href="admin.html">Admin Panel →</a></div>
+    </div>
+
+    <script src="supabase.js"></script>
+    <script>
+        // Press Enter to login
+        document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+        async function doLogin() {
+            const name = document.getElementById('nameInput').value.trim();
+            const pass = document.getElementById('passInput').value;
+            const btn = document.getElementById('loginBtn');
+            const err = document.getElementById('errMsg');
+            if (!name || !pass) return;
+            btn.disabled = true; btn.textContent = 'Checking...';
+            err.classList.remove('show');
+            try {
+                const { data, error } = await db.rpc('verify_member', { p_name: name, p_password: pass });
+                if (error || !data || data.length === 0) {
+                    err.classList.add('show'); btn.disabled = false; btn.textContent = 'Enter the Arena'; return;
+                }
+                const member = data[0];
+                sessionStorage.setItem('hu_member', JSON.stringify(member));
+                window.location.href = 'dashboard.html';
+            } catch (e) {
+                err.textContent = 'Something went wrong. Check your connection.';
+                err.classList.add('show'); btn.disabled = false; btn.textContent = 'Enter the Arena';
+            }
+        }
+    </script>
+</body>
+
+</html>
