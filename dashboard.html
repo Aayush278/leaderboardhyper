@@ -281,7 +281,7 @@
         /* STATS ROW */
         .stats-row {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: .85rem;
             margin-bottom: 1.5rem;
         }
@@ -674,10 +674,6 @@
                         <div class="stat-lbl">Total Score</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-val" id="statStreak">0</div>
-                        <div class="stat-lbl">Day Streak 🔥</div>
-                    </div>
-                    <div class="stat-card">
                         <div class="stat-val" id="statRank">#—</div>
                         <div class="stat-lbl">Current Rank</div>
                     </div>
@@ -868,7 +864,6 @@
       <div style="width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${avatarContent}</div>
       <div class="lb-info">
         <div class="lb-name" style="font-size:.9rem;">${m.name}${isMe ? ' <span style="color:var(--primary);font-size:.7rem;">(You)</span>' : ''}</div>
-        <div class="lb-streak">🔥 ${m.current_streak} day streak</div>
       </div>
       <div class="lb-score">${m.total_score}</div>
     </div>`;
